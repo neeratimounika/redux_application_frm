@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { useDispatch } from 'react-redux'
+import { deposit,withdraw,nameUpdate,mobileUpdate} from './actions'
 
 
 const Form = () => {
@@ -9,6 +10,7 @@ const Form = () => {
     const [amount,setAmount]=useState('')
     const [fullName,setFullName] = useState('')
     const [mobile,setMobile] = useState(null)
+    const [transactionId,updateTransactionId]=useState(0);
 
   return (
     <>
@@ -29,14 +31,32 @@ const Form = () => {
 
         <button className='btn btn-primary col-1' 
         onClick={()=>{
-            dispatch({type:'deposit',payload: amount });
+            dispatch(deposit(amount));
+            updateTransactionId(transactionId+1);
+            dispatch({
+                type:"ADD_TRANSACTION",
+                payload:{
+                    id:transactionId,
+                     amount:amount, 
+                     date: new Date(), 
+                     type: "Credit"
+            }})
             setAmount('');
         }}>Deposit</button>
 
 
         <button className='btn btn-danger mx-2 col-1' 
         onClick={()=>{
-            dispatch({type:'withdraw',payload: amount });
+            dispatch(withdraw(amount));
+            updateTransactionId(transactionId+1)
+            dispatch({
+                type:"ADD_TRANSACTION",
+                 payload:{
+                    id:transactionId,
+                    amount:amount, 
+                    date: new Date(),
+                    type: "Debit"
+            }})
             setAmount('');
         }}>Withdraw</button>
       </div>
@@ -56,7 +76,7 @@ const Form = () => {
 
         <button className='btn btn-primary col-1 mx-2' 
         onClick={()=>{
-            dispatch({type:'nameUpdate',payload: fullName });
+            dispatch(nameUpdate(fullName));
             setFullName('');
         }}>Update</button>
 
@@ -79,7 +99,7 @@ const Form = () => {
 
         <button className='btn btn-primary col-1 mx-2' 
         onClick={()=>{
-            dispatch({type:'mobileUpdate',payload: mobile });
+            dispatch(mobileUpdate(mobile));
             setMobile('');
         }}>Update</button>
 
@@ -87,7 +107,7 @@ const Form = () => {
 
 <button className='btn btn-danger col-1 mt-2' 
         onClick={()=>{
-            dispatch({type:'reset' });
+            dispatch({type:'reset'});
             setMobile('');
         }}>Reset</button>
       </div>
